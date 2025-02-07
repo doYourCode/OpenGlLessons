@@ -1,20 +1,64 @@
-// Lesson_01_Window.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+#include <glad/glad.h>
+#include <glad.c> // Alternatively, add glad.c to your src directly and add to the command line prompt when compiling
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
-#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 
-int main()
+static void error_callback(int error, const char* description);
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+int main(void)
 {
-    std::cout << "Hello World!\n";
+    GLFWwindow* window;
+
+    glfwSetErrorCallback(error_callback);
+
+    if (!glfwInit())
+        exit(EXIT_FAILURE);
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    glfwSetKeyCallback(window, key_callback);
+
+    glfwMakeContextCurrent(window);
+    gladLoadGL(); // gladLoadGL(glfwGetProcAddress) if glad generated without a loader
+    glfwSwapInterval(1);
+
+    glClearColor(1.0, 0.0, 0.0, 1.0);
+    while (!glfwWindowShouldClose(window))
+    {
+        glfwPollEvents();
+
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glfwSwapBuffers(window);
+    }
+
+    glfwDestroyWindow(window);
+
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+static void error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Error: %s\n", description);
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
