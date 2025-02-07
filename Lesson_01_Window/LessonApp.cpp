@@ -4,11 +4,7 @@ auto r = 0.0f, g = 0.0f, b = 0.0f;
 
 float ClampSwap(float x, float min, float max)
 {
-	if (x > max)
-		return min;
-	else if (x < min)
-		return max;
-	else return x;
+	return x > max ? min : x < min ? max : x;
 }
 
 void LessonApp::Update()

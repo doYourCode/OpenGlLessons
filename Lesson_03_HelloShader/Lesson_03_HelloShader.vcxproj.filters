@@ -18,13 +18,17 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LessonApp.cpp">
+    <ClCompile Include="ShaderApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LessonApp.h">
+    <ClInclude Include="ShaderApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="asset\basic.frag" />
+    <Resource Include="asset\basic.vert" />
   </ItemGroup>
 </Project>

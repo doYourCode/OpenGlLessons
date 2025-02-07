@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3038a616-c99c-4f80-a5ca-06903755f4eb}</ProjectGuid>
-    <RootNamespace>Lesson01Window</RootNamespace>
+    <ProjectGuid>{67308fc9-7be4-42a2-9077-464b407b3233}</ProjectGuid>
+    <RootNamespace>Lesson02HelloTriangle</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -109,8 +109,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\Glfw\src\Debug;$(SolutionDir)x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;ApplicationCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)vendor\Glfw\src\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;gdi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,16 +130,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LessonApp.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="TriangleApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TriangleApp.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCommon\ApplicationCommon.vcxproj">
       <Project>{221c5a59-a656-4ad0-ba4f-959b8d79770f}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="LessonApp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,27 @@
 #include "Application.h"
 
+void CenterWindow(GLFWwindow* window)
+{
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    if (!monitor)
+        return;
+
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    if (!mode)
+        return;
+
+    int monitorX, monitorY;
+    glfwGetMonitorPos(monitor, &monitorX, &monitorY);
+
+    int windowWidth, windowHeight;
+    glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+    glfwSetWindowPos(
+        window,
+        monitorX + (mode->width - windowWidth) / 2,
+        monitorY + (mode->height - windowHeight) / 2);
+}
+
 Application::Application(int width, int height, const char* title)
 {
     glfwSetErrorCallback(error_callback);
@@ -10,6 +32,7 @@ Application::Application(int width, int height, const char* title)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     this->window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (!this->window)
@@ -25,6 +48,9 @@ Application::Application(int width, int height, const char* title)
     glfwSwapInterval(1);
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
+
+    CenterWindow(this->window);
+    glfwShowWindow(this->window);
 }
 
 void Application::Run()
