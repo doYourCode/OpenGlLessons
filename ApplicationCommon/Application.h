@@ -29,7 +29,7 @@ public:
 
 	virtual void UnloadContent() {};
 
-private:
+protected:
 	GLFWwindow* window;
 };
 

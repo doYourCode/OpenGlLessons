@@ -7,19 +7,14 @@ layout(location = 2) in vec2 aTexCoord;
 out vec3 color;
 out vec2 texCoord;
 
-uniform float timer;
-
-float movementScale = 0.1f;
+uniform mat4 transform;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
     color = aCol;
     texCoord = aTexCoord;
 
-    gl_Position = vec4(
-    aPos.x + sin(timer + gl_VertexID) * movementScale,
-    aPos.y + cos(timer + gl_VertexID) * movementScale,
-    0.0f,
-    1.0f
-    );
+    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0f) * transform * projection * view;
 }

@@ -1,5 +1,9 @@
 #include "TransformApp.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Shader.h"
 #include "Texture.h"
 
@@ -26,9 +30,10 @@ float texCoordData[] =
 
 unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram;
 
-unsigned int texture1, texture2;
+unsigned int texture1;
 
-float timer = 0.0f;
+// create transformations
+glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 
 Texture* texture;
 
@@ -98,36 +103,8 @@ void LoadTexture()
 
     stbi_image_free(data);
 
-    // texture 2
-    // ---------
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data2 = stbi_load("../asset/texture/stop.png", &width, &height, &nrChannels, 0);
-    if (data2)
-    {
-        // note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data2);
-
     glUseProgram(shaderProgram);
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
-
-    glUniform1f(glGetUniformLocation(shaderProgram, "timer"), timer);
 }
 
 void DrawBuffer(unsigned int programId)
@@ -135,10 +112,10 @@ void DrawBuffer(unsigned int programId)
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
 
     glUseProgram(programId);
+
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -157,9 +134,10 @@ void TransformApp::LoadContent()
 
 void TransformApp::Update()
 {
-    timer += 0.01f;
-    glUniform1f(glGetUniformLocation(shaderProgram, "timer"), timer);
+    transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
 }
+
 
 void TransformApp::Draw()
 {
