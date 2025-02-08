@@ -1,4 +1,3 @@
-#include "Application.h"
 #include "LessonApp.h"
 #include <glad.c>
 

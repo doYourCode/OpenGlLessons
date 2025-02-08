@@ -1,4 +1,3 @@
-#include "Application.h"
 #include "TriangleApp.h"
 #include <glad.c>
 

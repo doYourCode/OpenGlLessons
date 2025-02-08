@@ -1,4 +1,3 @@
-#include "Application.h"
 #include "ShaderApp.h"
 #include <glad.c>
 
