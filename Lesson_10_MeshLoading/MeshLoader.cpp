@@ -1,4 +1,4 @@
-#include "IndexedApp.h"
+#include "MeshLoader.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,36 +7,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
-
-float verticesData[] =
-{    // x   // y    // z    //
-     0.5f,  0.5f,   0.0f,   // Vértice inferior esquerdo
-     0.5f, -0.5f,   0.0f,   // inferior direito
-    -0.5f, -0.5f,   0.0f,   // superior
-    -0.5f,  0.5f,   0.0f
-};
-
-float colorData[] =
-{   // R    // G    // B
-    1.0f,   0.0f,   0.0f,
-    0.0f,   1.0f,   0.0f,
-    0.0f,   0.0f,   1.0f,
-    0.0f,   0.0f,   0.0f
-
-};
-
-float texCoordData[] =
-{   // U    // V
-    1.0f,   1.0f,
-    1.0f,   0.0f,
-    0.0f,   0.0f,
-    0.0f,   1.0f
-};
-
-unsigned int indices[] =
-{
-    0, 1, 3, 1, 2, 3
-};
+#include "Mesh.h"
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -56,6 +27,8 @@ glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to iden
 Texture* texture;
 
 Camera camera;
+
+Mesh mesh;
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -145,31 +118,42 @@ void CreateBuffer()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
+
+    GLint size = 0;
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << "positions: " << size << std::endl;
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
+
+    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << size;
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh.texCoords.size() * sizeof(float), mesh.texCoords.data(), GL_STATIC_DRAW);
+
+    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << size;
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size() * sizeof(unsigned int), mesh.indices.data(), GL_STATIC_DRAW);
+
+    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << size;
 }
 
 void LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("camera.vert", "camera.frag");
+    shaderProgram = Shader::CreateProgram("mesh.vert", "mesh.frag");
 }
 
 void LoadTexture()
@@ -191,10 +175,10 @@ void LoadTexture()
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(false); // tell stb_image.h to flip loaded texture's on the y-axis.
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char* data = stbi_load("../asset/texture/uvChecker.jpg", &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load("../asset/texture/suzanne.png", &width, &height, &nrChannels, 0);
     if (data)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
@@ -210,6 +194,7 @@ void LoadTexture()
 
 void DrawBuffer(unsigned int programId)
 {
+    glEnable(GL_DEPTH_TEST);
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -225,11 +210,13 @@ void DrawBuffer(unsigned int programId)
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void IndexedApp::LoadContent()
+void MeshLoader::LoadContent()
 {
+    mesh.loadFromFile("../asset/mesh/suzanne.obj");
+
     CreateBuffer();
 
     LoadShaderProgram();
@@ -251,7 +238,7 @@ void IndexedApp::LoadContent()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void IndexedApp::Update(double deltaTime)
+void MeshLoader::Update(double deltaTime)
 {
     processInput(window);
 
@@ -260,11 +247,11 @@ void IndexedApp::Update(double deltaTime)
     lastFrame = currentFrame;
 
     transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
-    transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
+    transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 
-void IndexedApp::Draw()
+void MeshLoader::Draw()
 {
     DrawBuffer(shaderProgram);
 }

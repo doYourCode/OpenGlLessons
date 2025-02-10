@@ -63,7 +63,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakeBuildCommandLine>echo | XCOPY "$(SolutionDir)asset" "$(SolutionDir)$(Platform)\asset" /E /Y /M</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>echo | XCOPY "$(SolutionDir)asset" "$(SolutionDir)$(Platform)\asset" /E /Y
+
+echo | XCOPY "$(SolutionDir)vendor\assimp\bin\Debug\assimp-vc143-mtd.dll" "$(SolutionDir)$(Platform)\Debug" /Y</NMakeBuildCommandLine>
     <NMakePreprocessorDefinitions>_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>$(SolutionDir)$(Platform)\</OutDir>
   </PropertyGroup>

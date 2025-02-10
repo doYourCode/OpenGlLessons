@@ -251,7 +251,7 @@ void IndexedApp::LoadContent()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void IndexedApp::Update()
+void IndexedApp::Update(double deltaTime)
 {
     processInput(window);
 

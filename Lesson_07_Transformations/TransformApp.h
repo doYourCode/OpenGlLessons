@@ -9,7 +9,7 @@ public:
 
     void LoadContent();
 
-    void Update();
+    void Update(double deltaTime);
 
     void Draw();
 };

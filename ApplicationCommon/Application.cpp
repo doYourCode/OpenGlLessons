@@ -59,11 +59,11 @@ void Application::Run()
 
     while (!glfwWindowShouldClose(this->window))
     {
+        this->Update(GetDeltaTime());
+
         glfwPollEvents();
 
-        this->Update();
-
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         this->Draw();
 
@@ -80,6 +80,14 @@ void Application::Clear()
     glfwTerminate();
 
     exit(EXIT_SUCCESS);
+}
+
+double Application::GetDeltaTime()
+{
+    double now = glfwGetTime();
+    double delta = now - this->lastFrameTime;
+    this->lastFrameTime = now;
+    return delta;
 }
 
 static void error_callback(int error, const char* description)

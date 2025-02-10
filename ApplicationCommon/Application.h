@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <chrono>
 
 static void error_callback(int error, const char* description);
 
@@ -14,7 +15,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 class Application
 {
+
 public:
+
 	Application(int width = 512, int height = 512, const char* title = "");
 
 	void Run();
@@ -23,13 +26,21 @@ public:
 
 	virtual void LoadContent() {};
 
-	virtual void Update() {};
+	virtual void Update(double deltaTime) {};
 
 	virtual void Draw() {};
 
 	virtual void UnloadContent() {};
 
 protected:
+
 	GLFWwindow* window;
+
+private:
+
+	double GetDeltaTime();
+
+	double lastFrameTime;
+
 };
 

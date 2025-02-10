@@ -132,7 +132,7 @@ void TransformApp::LoadContent()
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
-void TransformApp::Update()
+void TransformApp::Update(double deltaTime)
 {
     transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
     transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));

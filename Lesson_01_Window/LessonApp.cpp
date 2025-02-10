@@ -7,9 +7,9 @@ float ClampSwap(float x, float min, float max)
 	return x > max ? min : x < min ? max : x;
 }
 
-void LessonApp::Update()
+void LessonApp::Update(double deltaTime)
 {
-	r += 0.01f;
+	r += 1.1f * (float)deltaTime;
 	r = ClampSwap(r, 0.0f, 1.0f);
 }
 

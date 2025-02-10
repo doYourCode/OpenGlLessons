@@ -238,7 +238,7 @@ void CameraApp::LoadContent()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void CameraApp::Update()
+void CameraApp::Update(double deltaTime)
 {
     processInput(window);
 

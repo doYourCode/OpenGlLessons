@@ -155,7 +155,7 @@ void UniformsApp::LoadContent()
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
-void UniformsApp::Update()
+void UniformsApp::Update(double deltaTime)
 {
     timer += 0.01f;
     glUniform1f(glGetUniformLocation(shaderProgram, "timer"), timer);

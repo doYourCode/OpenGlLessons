@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{8B02
 		asset\shader\basic.vert = asset\shader\basic.vert
 		asset\shader\camera.frag = asset\shader\camera.frag
 		asset\shader\camera.vert = asset\shader\camera.vert
+		asset\shader\mesh.frag = asset\shader\mesh.frag
+		asset\shader\mesh.vert = asset\shader\mesh.vert
 		asset\shader\texture.frag = asset\shader\texture.frag
 		asset\shader\texture.vert = asset\shader\texture.vert
 		asset\shader\transforms.frag = asset\shader\transforms.frag
@@ -58,6 +60,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ContentBuild", "ContentBuild\ContentBuild.vcxproj", "{CA3E0304-B850-4585-A23F-F8B60296C8CC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lesson_09_IndexedTriangles_Box", "Lesson_09_IndexedTriangles_Box\Lesson_09_IndexedTriangles_Box.vcxproj", "{87A80DFA-0192-4B7F-8334-2C6EE3B6B7F6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "assimp", "vendor\assimp\code\assimp.vcxproj", "{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstatic", "vendor\assimp\contrib\zlib\zlibstatic.vcxproj", "{3E683620-E345-3BD5-9BB7-6E475C636096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -219,6 +225,22 @@ Global
 		{87A80DFA-0192-4B7F-8334-2C6EE3B6B7F6}.Release|x64.Build.0 = Release|x64
 		{87A80DFA-0192-4B7F-8334-2C6EE3B6B7F6}.Release|x86.ActiveCfg = Release|Win32
 		{87A80DFA-0192-4B7F-8334-2C6EE3B6B7F6}.Release|x86.Build.0 = Release|Win32
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Debug|x64.ActiveCfg = Debug|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Debug|x64.Build.0 = Debug|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Debug|x86.ActiveCfg = Debug|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Debug|x86.Build.0 = Debug|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Release|x64.ActiveCfg = Release|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Release|x64.Build.0 = Release|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Release|x86.ActiveCfg = Release|x64
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951}.Release|x86.Build.0 = Release|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Debug|x64.ActiveCfg = Debug|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Debug|x64.Build.0 = Debug|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Debug|x86.ActiveCfg = Debug|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Debug|x86.Build.0 = Debug|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Release|x64.ActiveCfg = Release|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Release|x64.Build.0 = Release|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Release|x86.ActiveCfg = Release|x64
+		{3E683620-E345-3BD5-9BB7-6E475C636096}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -226,5 +248,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{586BC990-54A6-3B12-B0A3-32B67BA8671C} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
 		{C4169BDB-5C8F-38BF-8292-6E20A1F02217} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
+		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
+		{3E683620-E345-3BD5-9BB7-6E475C636096} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
 	EndGlobalSection
 EndGlobal
