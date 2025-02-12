@@ -80,7 +80,7 @@ void Application::Run()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //this->Draw();
+        this->Draw();
 
         glDisable(GL_DEPTH_TEST);
         gltBeginDraw();

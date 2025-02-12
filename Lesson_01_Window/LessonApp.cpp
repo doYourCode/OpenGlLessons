@@ -9,7 +9,7 @@ float ClampSwap(float x, float min, float max)
 
 void LessonApp::Update(double deltaTime)
 {
-	r += 1.1f * (float)deltaTime;
+	r += 10000.1f * (float)deltaTime;
 	r = ClampSwap(r, 0.0f, 1.0f);
 }
 
