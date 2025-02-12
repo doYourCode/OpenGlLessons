@@ -112,7 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)GraphicsCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -146,6 +146,9 @@
     <ClCompile Include="Application.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GraphicsCommon\GraphicsCommon.vcxproj">
+      <Project>{b38ef8e7-9a21-40ff-9267-de7eaee4c821}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\Glfw\src\glfw.vcxproj">
       <Project>{586bc990-54a6-3b12-b0a3-32b67ba8671c}</Project>
     </ProjectReference>

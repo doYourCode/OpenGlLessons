@@ -32,9 +32,13 @@ public:
 
 	virtual void UnloadContent() {};
 
+	virtual void TextDraw() {};
+
 protected:
 
 	GLFWwindow* window;
+
+	unsigned int width, height;
 
 private:
 

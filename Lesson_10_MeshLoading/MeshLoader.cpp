@@ -9,6 +9,9 @@
 #include "Camera.h"
 #include "Mesh.h"
 
+#define GLT_IMPLEMENTATION
+#include "gltext.h"
+
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
@@ -29,6 +32,8 @@ Texture* texture;
 Camera camera;
 
 Mesh mesh;
+
+GLTtext* text1;
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -120,34 +125,22 @@ void CreateBuffer()
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
 
-    GLint size = 0;
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << "positions: " << size << std::endl;
-
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
     glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
-
-    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << size;
-
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
     glBufferData(GL_ARRAY_BUFFER, mesh.texCoords.size() * sizeof(float), mesh.texCoords.data(), GL_STATIC_DRAW);
-
-    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << size;
-
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size() * sizeof(unsigned int), mesh.indices.data(), GL_STATIC_DRAW);
-
-    glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size); std::cout << size;
 }
 
 void LoadShaderProgram()
@@ -223,10 +216,10 @@ void MeshLoader::LoadContent()
 
     LoadTexture();
 
-    camera.Position.z = -3.0f;
+    camera.Position.z = -18.0f;
     camera.Front.z = 1.0f;
     camera.Up.y = 1.0f;
-    camera.Zoom = 60.0f;
+    camera.Zoom = 5.0f;
 
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 
@@ -236,6 +229,9 @@ void MeshLoader::LoadContent()
     glfwSetScrollCallback(this->window, scroll_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    text1 = gltCreateText();
+    gltSetText(text1, "Ola");
 }
 
 void MeshLoader::Update(double deltaTime)
@@ -254,4 +250,21 @@ void MeshLoader::Update(double deltaTime)
 void MeshLoader::Draw()
 {
     DrawBuffer(shaderProgram);
+}
+
+void MeshLoader::UnloadContent()
+{
+    gltDeleteText(text1);
+}
+
+void MeshLoader::TextDraw()
+{
+    gltColor(1.0f, 1.0f, 1.0f, 1.0f);
+    gltDrawText2D(text1, 0.0f, 0.0f, 1.0f); // x=0.0, y=0.0, scale=1.0
+
+    gltDrawText2DAligned(text1,
+        (GLfloat)(this->width / 2),
+        (GLfloat)(this->height / 2),
+        3.0f,
+        GLT_CENTER, GLT_CENTER);
 }

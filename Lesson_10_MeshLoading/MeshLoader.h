@@ -12,4 +12,8 @@ public:
     void Update(double deltaTime);
 
     void Draw();
+
+    void UnloadContent();
+        
+    void TextDraw();
 };
