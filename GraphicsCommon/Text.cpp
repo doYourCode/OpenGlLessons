@@ -1,5 +1,8 @@
 #include "Text.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
@@ -28,6 +31,9 @@ Text::Text(const char* filePath)
         // disable byte-alignment restriction
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+        FT_GlyphSlot slot = face->glyph; // <-- This is new
+    
+
         // load first 128 characters of ASCII set
         for (unsigned char c = 0; c < 128; c++)
         {
@@ -37,6 +43,9 @@ Text::Text(const char* filePath)
                 std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
                 continue;
             }
+
+            FT_Render_Glyph(slot, FT_RENDER_MODE_SDF); // <-- And this is new
+
             // generate texture
             unsigned int texture;
             glGenTextures(1, &texture);
@@ -101,6 +110,7 @@ Text::Text(const char* filePath)
 
 void Text::Draw(unsigned int shader, std::string text, float x, float y, float scale, glm::vec3 color)
 {
+    glDepthMask(GL_FALSE);
 
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
@@ -147,4 +157,6 @@ void Text::Draw(unsigned int shader, std::string text, float x, float y, float s
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    glDepthMask(GL_TRUE);
 }

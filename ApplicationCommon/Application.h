@@ -33,8 +33,6 @@ public:
 
 	virtual void UnloadContent() {};
 
-	virtual void TextDraw() {};
-
 protected:
 
 	GLFWwindow* window;

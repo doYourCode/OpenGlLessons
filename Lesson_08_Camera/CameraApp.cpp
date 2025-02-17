@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Text.h"
 
 float verticesData[] =
 {    // x   // y    // z    //
@@ -47,6 +48,8 @@ glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to iden
 Texture* texture;
 
 Camera camera;
+
+Text* text;
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -197,6 +200,7 @@ void LoadTexture()
 
 void DrawBuffer(unsigned int programId)
 {
+    glDisable(GL_CULL_FACE);
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -236,6 +240,8 @@ void CameraApp::LoadContent()
     glfwSetScrollCallback(this->window, scroll_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    text = new Text("");
 }
 
 void CameraApp::Update(double deltaTime)
@@ -254,4 +260,5 @@ void CameraApp::Update(double deltaTime)
 void CameraApp::Draw()
 {
     DrawBuffer(shaderProgram);
+    text->Draw(0, "Mouse scroll: zoom in/out", 32, 32, 0.25, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }
