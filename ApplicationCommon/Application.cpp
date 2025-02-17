@@ -1,8 +1,5 @@
 #include "Application.h"
 
-#define GLT_IMPLEMENTATION
-#include "gltext.h" /* https://github.com/vallentin/glText */
-
 void CenterWindow(GLFWwindow* window)
 {
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -57,21 +54,20 @@ Application::Application(int width, int height, const char* title)
 
     this->width = width;
     this->height = height;
-
-    if (!gltInit())
-    {
-        fprintf(stderr, "Failed to initialize glText\n");
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
 }
 
 void Application::Run()
 {
     this->LoadContent();
 
+    int viewportWidth, viewportHeight;
+    /// 
+    ///////////////////
+
     while (!glfwWindowShouldClose(this->window))
     {
+        glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
+
         this->Update(GetDeltaTime());
 
         glViewport(0, 0, width, height);
@@ -82,13 +78,6 @@ void Application::Run()
 
         this->Draw();
 
-        glDisable(GL_DEPTH_TEST);
-        gltBeginDraw();
-
-        this->TextDraw();
-
-        gltEndDraw();
-
         glfwSwapBuffers(this->window);
     }
 }
@@ -96,8 +85,6 @@ void Application::Run()
 void Application::Clear()
 {
     this->UnloadContent();
-
-    gltTerminate();
 
     glfwDestroyWindow(this->window);
 

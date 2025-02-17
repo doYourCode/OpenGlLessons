@@ -9,9 +9,6 @@
 #include "Camera.h"
 #include "Mesh.h"
 
-#define GLT_IMPLEMENTATION
-#include "gltext.h"
-
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
@@ -32,8 +29,6 @@ Texture* texture;
 Camera camera;
 
 Mesh mesh;
-
-GLTtext* text1;
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -229,9 +224,6 @@ void MeshLoader::LoadContent()
     glfwSetScrollCallback(this->window, scroll_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    text1 = gltCreateText();
-    gltSetText(text1, "Ola");
 }
 
 void MeshLoader::Update(double deltaTime)
@@ -254,17 +246,10 @@ void MeshLoader::Draw()
 
 void MeshLoader::UnloadContent()
 {
-    gltDeleteText(text1);
+
 }
 
 void MeshLoader::TextDraw()
 {
-    gltColor(1.0f, 1.0f, 1.0f, 1.0f);
-    gltDrawText2D(text1, 0.0f, 0.0f, 1.0f); // x=0.0, y=0.0, scale=1.0
 
-    gltDrawText2DAligned(text1,
-        (GLfloat)(this->width / 2),
-        (GLfloat)(this->height / 2),
-        3.0f,
-        GLT_CENTER, GLT_CENTER);
 }

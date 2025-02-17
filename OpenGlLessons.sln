@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shaders", "shaders", "{8B02
 		asset\shader\camera.vert = asset\shader\camera.vert
 		asset\shader\mesh.frag = asset\shader\mesh.frag
 		asset\shader\mesh.vert = asset\shader\mesh.vert
+		asset\shader\text.frag = asset\shader\text.frag
+		asset\shader\text.vert = asset\shader\text.vert
 		asset\shader\texture.frag = asset\shader\texture.frag
 		asset\shader\texture.vert = asset\shader\texture.vert
 		asset\shader\transforms.frag = asset\shader\transforms.frag
@@ -66,6 +68,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlibstatic", "vendor\assimp\contrib\zlib\zlibstatic.vcxproj", "{3E683620-E345-3BD5-9BB7-6E475C636096}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lesson_01_Window_TextRendering", "Lesson_01_Window_TextRendering\Lesson_01_Window_TextRendering.vcxproj", "{D97C24A9-D906-4F03-A7B1-A985093EC73A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "vendor\freetype\build\freetype.vcxproj", "{3A592AAC-563C-3812-9CF2-9FBC4634C42C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -251,6 +255,14 @@ Global
 		{D97C24A9-D906-4F03-A7B1-A985093EC73A}.Release|x64.Build.0 = Release|x64
 		{D97C24A9-D906-4F03-A7B1-A985093EC73A}.Release|x86.ActiveCfg = Release|Win32
 		{D97C24A9-D906-4F03-A7B1-A985093EC73A}.Release|x86.Build.0 = Release|Win32
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Debug|x64.ActiveCfg = Debug|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Debug|x64.Build.0 = Debug|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Debug|x86.ActiveCfg = Debug|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Debug|x86.Build.0 = Debug|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x64.ActiveCfg = Release|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x64.Build.0 = Release|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x86.ActiveCfg = Release|x64
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -260,5 +272,6 @@ Global
 		{C4169BDB-5C8F-38BF-8292-6E20A1F02217} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
 		{9463BD1A-A3AE-32D3-A0C7-337A06B3D951} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
 		{3E683620-E345-3BD5-9BB7-6E475C636096} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
+		{3A592AAC-563C-3812-9CF2-9FBC4634C42C} = {A3AC77F7-F823-4E6D-9559-ACAB45576643}
 	EndGlobalSection
 EndGlobal

@@ -1,10 +1,9 @@
 #include "LessonApp.h"
 #include <glad.c>
-
-/*
+/**
 int main(void)
 {
-    LessonApp app(800, 800, "Lesson 01: Window");
+    LessonApp app(800, 800, "Lesson 01: Window and Text Rendering");
 
     app.Run();
 
@@ -12,110 +11,106 @@ int main(void)
 }
 */
 
+#include <iostream>
+#include <map>
+#include <string>
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
-#include <math.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-#include <glad/glad.h> /* https://github.com/Dav1dde/glad */
-#include <GLFW/glfw3.h> /* https://github.com/glfw/glfw */
+#include <ft2build.h>
+#include <Shader.h>
+#include <Text.h>
+#include FT_FREETYPE_H
 
-#define GLT_IMPLEMENTATION
-#include "gltext.h" /* https://github.com/vallentin/glText */
+unsigned int shader;
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
 
-int main(int argc, char* argv[])
+// settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+int main()
 {
-	if (!glfwInit())
-	{
-		printf("Failed to initialize GLFW\n");
-		return EXIT_FAILURE;
-	}
+    // glfw: initialize and configure
+    // ------------------------------
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // glfw window creation
+    // --------------------
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    // glad: load all OpenGL function pointers
+    // ---------------------------------------
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
 
-	glfwWindowHint(GLFW_ALPHA_BITS, 8);
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	glfwWindowHint(GLFW_STENCIL_BITS, 8);
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "glText", NULL, NULL);
+    Text text("");
+    
 
-	if (!window)
-	{
-		fprintf(stderr, "Failed to create window\n");
-		glfwTerminate();
-		return EXIT_FAILURE;
-	}
+    // render loop
+    // -----------
+    while (!glfwWindowShouldClose(window))
+    {
+        // input
+        // -----
+        processInput(window);
 
-	glfwShowWindow(window);
-	glfwMakeContextCurrent(window);
+        // render
+        // ------
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		fprintf(stderr, "Failed to load OpenGL functions and extensions\n");
-		glfwTerminate();
-		return EXIT_FAILURE;
-	}
+        text.Draw(shader, "OpenGL is not myZovo anymore!", 32, 32, 1.0, glm::vec4(1.0f, 1.0f, 0.2f, 1.0f));
 
-	glfwSwapInterval(1);
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glfwTerminate();
+    return 0;
+}
 
-	if (!gltInit())
-	{
-		fprintf(stderr, "Failed to initialize glText\n");
-		glfwTerminate();
-		return EXIT_FAILURE;
-	}
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
+void processInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
 
-	GLTtext* text1 = gltCreateText();
-	gltSetText(text1, "Hello World!");
-
-	int viewportWidth, viewportHeight;
-
-	while (!glfwWindowShouldClose(window))
-	{
-
-		glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
-
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE))
-			glfwSetWindowShouldClose(window, GLFW_TRUE);
-
-		glViewport(0, 0, viewportWidth, viewportHeight);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		gltBeginDraw();
-
-		gltColor(1.0f, 1.0f, 1.0f, 1.0f);
-		gltDrawText2D(text1, 0.0f, 0.0f, 2.0f); // x=0.0, y=0.0, scale=1.0
-
-		gltDrawText2DAligned(text1,
-			(GLfloat)(viewportWidth / 2),
-			(GLfloat)(viewportHeight / 2),
-			1.0f,
-			GLT_CENTER, GLT_CENTER);
-
-		gltEndDraw();
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-
-	gltDeleteText(text1);
-
-	gltTerminate();
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
-
-	return EXIT_SUCCESS;
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
 }

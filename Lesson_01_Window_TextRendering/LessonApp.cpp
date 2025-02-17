@@ -1,7 +1,6 @@
 #include "LessonApp.h"
 
-#define GLT_IMPLEMENTATION
-#include <gltext.h>
+#include <iostream>
 
 float r = 0.0f, g = 0.0f, b = 0.0f;
 
@@ -23,9 +22,5 @@ void LessonApp::Draw()
 
 void LessonApp::TextDraw()
 {
-	GLTtext* text1 = gltCreateText();
-	gltSetText(text1, "Hello World!");
 
-	gltColor(1.0f, 1.0f, 1.0f, 1.0f);
-	gltDrawText2D(text1, 0.0f, 0.0f, 1.0f); // x=0.0, y=0.0, scale=1.0
 }

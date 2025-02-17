@@ -113,7 +113,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)ApplicationCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)ApplicationCommon;C:\Users\caioc\source\repos\OpenGlLessons\vendor\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -143,9 +143,9 @@
   <ItemGroup>
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="gltext.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
@@ -153,9 +153,13 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\vendor\freetype\build\freetype.vcxproj">
+      <Project>{3a592aac-563c-3812-9cf2-9fbc4634c42c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\glm\glm\glm.vcxproj">
       <Project>{c4169bdb-5c8f-38bf-8292-6e20a1f02217}</Project>
     </ProjectReference>
