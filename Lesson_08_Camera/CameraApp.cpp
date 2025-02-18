@@ -235,19 +235,19 @@ void CameraApp::LoadContent()
 
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 
-    glfwMakeContextCurrent(this->window);
-    glfwSetFramebufferSizeCallback(this->window, framebuffer_size_callback);
+    glfwMakeContextCurrent(this->GetWindow());
+    glfwSetFramebufferSizeCallback(this->GetWindow(), framebuffer_size_callback);
     //glfwSetCursorPosCallback(this->window, mouse_callback);
-    glfwSetScrollCallback(this->window, scroll_callback);
+    glfwSetScrollCallback(this->GetWindow(), scroll_callback);
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(this->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     text = new Text("");
 }
 
 void CameraApp::Update(double deltaTime)
 {
-    processInput(window);
+    processInput(this->GetWindow());
 
     float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;

@@ -1,6 +1,12 @@
 #include "Application.h"
 
-void CenterWindow(GLFWwindow* window)
+#define UNUSED(x) (void)(x)
+
+static void error_callback(int error, const char* description);
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+static void CenterWindow(GLFWwindow* window)
 {
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     if (!monitor)
@@ -10,10 +16,12 @@ void CenterWindow(GLFWwindow* window)
     if (!mode)
         return;
 
-    int monitorX, monitorY;
+    int monitorX;
+    int monitorY;
     glfwGetMonitorPos(monitor, &monitorX, &monitorY);
 
-    int windowWidth, windowHeight;
+    int windowWidth;
+    int windowHeight;
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
     glfwSetWindowPos(
@@ -24,6 +32,8 @@ void CenterWindow(GLFWwindow* window)
 
 Application::Application(int width, int height, const char* title)
 {
+    lastFrameTime = 0.0;
+
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
@@ -34,7 +44,7 @@ Application::Application(int width, int height, const char* title)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-    this->window = glfwCreateWindow(width, height, title, NULL, NULL);
+    this->window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if (!this->window)
     {
         glfwTerminate();
@@ -60,7 +70,8 @@ void Application::Run()
 {
     this->LoadContent();
 
-    int viewportWidth, viewportHeight;
+    int viewportWidth;
+    int viewportHeight;
     /// 
     ///////////////////
 
@@ -82,7 +93,8 @@ void Application::Run()
     }
 }
 
-void Application::Clear()
+
+[[ noreturn ]] void Application::Clear()
 {
     this->UnloadContent();
 
@@ -103,11 +115,16 @@ double Application::GetDeltaTime()
 
 static void error_callback(int error, const char* description)
 {
-    fprintf(stderr, "Error: %s\n", description);
+    fprintf(stderr, "Error %i: %s\n", error, description);
 }
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    UNUSED (scancode);
+    UNUSED (mods);
+
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }   
 }

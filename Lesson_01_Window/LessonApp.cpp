@@ -1,6 +1,8 @@
 #include "LessonApp.h"
 
-auto r = 0.0f, g = 0.0f, b = 0.0f;
+float r = 0.0f;
+float g = 0.0f;
+float b = 0.0f;
 
 float ClampSwap(float x, float min, float max)
 {

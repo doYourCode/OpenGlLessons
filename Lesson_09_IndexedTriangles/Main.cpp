@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    IndexedApp app(800, 800, "Lesson 06: Uniforms");
+    IndexedApp app(800, 800, "Lesson 09: Indexed Triangles");
 
     app.Run();
 

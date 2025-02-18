@@ -11,7 +11,6 @@
 #include<iostream>
 #include<cerrno>
 
-
 struct Texture
 {
 	GLuint ID;

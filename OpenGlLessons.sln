@@ -71,6 +71,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lesson_01_Window_TextRender
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "vendor\freetype\build\freetype.vcxproj", "{3A592AAC-563C-3812-9CF2-9FBC4634C42C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lesson_01_Window_ImGui", "Lesson_01_Window_ImGui\Lesson_01_Window_ImGui.vcxproj", "{05C01574-2663-40BB-8E3C-8F3C661665AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -263,6 +265,14 @@ Global
 		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x64.Build.0 = Release|x64
 		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x86.ActiveCfg = Release|x64
 		{3A592AAC-563C-3812-9CF2-9FBC4634C42C}.Release|x86.Build.0 = Release|x64
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Debug|x64.ActiveCfg = Debug|x64
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Debug|x64.Build.0 = Debug|x64
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Debug|x86.ActiveCfg = Debug|Win32
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Debug|x86.Build.0 = Debug|Win32
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Release|x64.ActiveCfg = Release|x64
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Release|x64.Build.0 = Release|x64
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Release|x86.ActiveCfg = Release|Win32
+		{05C01574-2663-40BB-8E3C-8F3C661665AA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
