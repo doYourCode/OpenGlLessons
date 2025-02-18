@@ -8,6 +8,7 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Mesh.h"
+#include <Text.h>
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -30,23 +31,7 @@ Camera camera;
 
 Mesh mesh;
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    float cameraSpeed = static_cast<float>(2.5 * deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.Position += cameraSpeed * camera.Front;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.Position -= cameraSpeed * camera.Front;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.Position -= glm::normalize(glm::cross(camera.Front, camera.Up)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.Position += glm::normalize(glm::cross(camera.Front, camera.Up)) * cameraSpeed;
-}
+Text* text;
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
@@ -182,6 +167,8 @@ void LoadTexture()
 
 void DrawBuffer(unsigned int programId)
 {
+    glDisable(GL_CULL_FACE);
+
     glEnable(GL_DEPTH_TEST);
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
@@ -216,6 +203,8 @@ void MeshLoader::LoadContent()
     camera.Up.y = 1.0f;
     camera.Zoom = 5.0f;
 
+    text = new Text("");
+
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 
     glfwMakeContextCurrent(this->window);
@@ -228,13 +217,10 @@ void MeshLoader::LoadContent()
 
 void MeshLoader::Update(double deltaTime)
 {
-    processInput(window);
-
     float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
     transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
@@ -242,14 +228,7 @@ void MeshLoader::Update(double deltaTime)
 void MeshLoader::Draw()
 {
     DrawBuffer(shaderProgram);
-}
 
-void MeshLoader::UnloadContent()
-{
-
-}
-
-void MeshLoader::TextDraw()
-{
-
+    text->Draw(0, "Mouse scroll to zoom in/out", 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

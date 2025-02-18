@@ -2,10 +2,13 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
 #include "Texture.h"
+#include "Text.h"
 
 float verticesData[] =
 {    // x   // y    // z    //
@@ -35,7 +38,15 @@ unsigned int texture1;
 // create transformations
 glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 
+glm::vec3 scale;
+glm::quat rotation;
+glm::vec3 translation;
+glm::vec3 skew;
+glm::vec4 _perspective;
+
 Texture* texture;
+
+Text* text;
 
 void CreateBuffer()
 {
@@ -109,6 +120,9 @@ void LoadTexture()
 
 void DrawBuffer(unsigned int programId)
 {
+    // We need to clear the draw state after the text rendering.
+    glDisable(GL_CULL_FACE);
+
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -129,6 +143,8 @@ void TransformApp::LoadContent()
 
     LoadTexture();
 
+    text = new Text("");
+
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
@@ -142,4 +158,9 @@ void TransformApp::Update(double deltaTime)
 void TransformApp::Draw()
 {
     DrawBuffer(shaderProgram);
+
+    glm::decompose(transform, scale, rotation, translation, skew, _perspective);
+
+    text->Draw(0, "rotation x: 0.0, y: 0.0, z: " + std::to_string(rotation.z), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

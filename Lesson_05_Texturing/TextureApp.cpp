@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include "Text.h"
 
 float verticesData[] =
 {    // x   // y    // z    //
@@ -29,6 +30,8 @@ unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram;
 unsigned int texture1, texture2;
 
 Texture* texture;
+
+Text* text;
 
 void CreateBuffer()
 {
@@ -127,6 +130,9 @@ void LoadTexture()
 
 void DrawBuffer(unsigned int programId)
 {
+    // We need to clear the draw state after the text rendering.
+    glDisable(GL_CULL_FACE);
+
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -147,10 +153,14 @@ void TextureApp::LoadContent()
 
     LoadTexture();
 
+    text = new Text("");
+
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
 void TextureApp::Draw()
 {
     DrawBuffer(shaderProgram);
+
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

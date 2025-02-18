@@ -1,6 +1,5 @@
 #include "LessonApp.h"
 
-#include <iostream>
 #include "Text.h"
 
 float r = 0.0f, g = 0.0f, b = 0.0f;
@@ -15,6 +14,7 @@ float ClampSwap(float x, float min, float max)
 void LessonApp::LoadContent()
 {
 	text = new Text("");
+	
 }
 
 void LessonApp::Update(double deltaTime)
@@ -27,9 +27,5 @@ void LessonApp::Draw()
 {
 	glClearColor(r, g, b, 1.0);
 
-	text->Draw(0, "OpenGL is not myZovo anymore!", 32, 32, 1.0, glm::vec4(1.0f, 1.0f, 0.2f, 1.0f));
-	text->Draw(0, "OpenGL is not myZovo anymore!", 32, 76, 0.75, glm::vec4(1.0f, 0.5f, 0.6f, 1.0f));
-	text->Draw(0, "OpenGL is not myZovo anymore!", 32, 128, 0.5, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	text->Draw(0, "OpenGL is not myZovo anymore!", 32, 160, 0.25, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	text->Draw(0, "OpenGL is not myZovo anymore!", 32, 212, 0.125, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

@@ -5,6 +5,7 @@
 class MeshLoader : public Application
 {
 public:
+
     MeshLoader(int width, int height, const char* title) : Application(width, height, title) {};
 
     void LoadContent();
@@ -12,8 +13,4 @@ public:
     void Update(double deltaTime);
 
     void Draw();
-
-    void UnloadContent();
-        
-    void TextDraw();
 };

@@ -122,10 +122,10 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.Zoom -= (float)yoffset;
-    if (camera.Zoom < 1.0f)
-        camera.Zoom = 1.0f;
-    if (camera.Zoom > 45.0f)
-        camera.Zoom = 45.0f;
+    if (camera.Zoom < 15.0f)
+        camera.Zoom = 15.0f;
+    if (camera.Zoom > 90.0f)
+        camera.Zoom = 90.0f;
 }
 
 void CreateBuffer()
@@ -201,6 +201,7 @@ void LoadTexture()
 void DrawBuffer(unsigned int programId)
 {
     glDisable(GL_CULL_FACE);
+
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -252,7 +253,7 @@ void CameraApp::Update(double deltaTime)
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
+    transform = glm::translate(transform, camera.Position);
     transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
@@ -260,5 +261,8 @@ void CameraApp::Update(double deltaTime)
 void CameraApp::Draw()
 {
     DrawBuffer(shaderProgram);
-    text->Draw(0, "Mouse scroll: zoom in/out", 32, 32, 0.25, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+
+    text->Draw(0, "Mouse scroll to zoom in/out", 32, 96, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw(0, "fov " + std::to_string(camera.Zoom), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

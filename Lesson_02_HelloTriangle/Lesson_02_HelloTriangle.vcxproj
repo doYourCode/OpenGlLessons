@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)ApplicationCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)ApplicationCommon;$(SolutionDir)GraphicsCommon;C:\Users\caioc\source\repos\OpenGlLessons\vendor\freetype\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

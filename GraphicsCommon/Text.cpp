@@ -101,9 +101,15 @@ Text::Text(const char* filePath)
 
     // compile and setup the shader
     // ----------------------------
+
+    GLint m_viewport[4];
+    glGetIntegerv(GL_VIEWPORT, m_viewport);
+
     Shader::SetRootPath("../asset/shader/");
     shader = Shader::CreateProgram("text.vert", "text.frag");
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
+
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_viewport[2]), 0.0f, static_cast<float>(m_viewport[3]));
+    
     glUseProgram(shader);
     glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 }

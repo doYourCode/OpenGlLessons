@@ -1,6 +1,7 @@
 #include "ShaderApp.h"
 
 #include "Shader.h"
+#include "Text.h"
 
 float verticesData[] =
 {    // x   // y    // z    //
@@ -10,6 +11,8 @@ float verticesData[] =
 };
 
 unsigned int vao, vbo, shaderProgram;
+
+Text* text;
 
 void CreateBuffer()
 {
@@ -33,6 +36,8 @@ void LoadShaderProgram()
 
 void DrawBuffer(unsigned int programId)
 {
+    // We need to clear the draw state after the text rendering.
+    glDisable(GL_CULL_FACE);
     glUseProgram(programId);
 
     glBindVertexArray(vao);
@@ -45,10 +50,14 @@ void ShaderApp::LoadContent()
 
     LoadShaderProgram();
 
+    text = new Text("");
+
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
 void ShaderApp::Draw()
 {
     DrawBuffer(shaderProgram);
+
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

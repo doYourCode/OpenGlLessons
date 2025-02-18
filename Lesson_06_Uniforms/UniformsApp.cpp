@@ -2,6 +2,7 @@
 
 #include "Shader.h"
 #include "Texture.h"
+#include "Text.h"
 
 float verticesData[] =
 {    // x   // y    // z    //
@@ -24,13 +25,15 @@ float texCoordData[] =
     0.5f,   0.0f
 };
 
-unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram;
+unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram, timerUniformLocation;
 
 unsigned int texture1, texture2;
 
 float timer = 0.0f;
 
 Texture* texture;
+
+Text* text;
 
 void CreateBuffer()
 {
@@ -64,6 +67,8 @@ void LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
     shaderProgram = Shader::CreateProgram("uniforms.vert", "uniforms.frag");
+
+    timerUniformLocation = glGetUniformLocation(shaderProgram, "timer");
 }
 
 void LoadTexture()
@@ -127,11 +132,14 @@ void LoadTexture()
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
-    glUniform1f(glGetUniformLocation(shaderProgram, "timer"), timer);
+    glUniform1f(timerUniformLocation, timer);
 }
 
 void DrawBuffer(unsigned int programId)
 {
+    // We need to clear the draw state after the text rendering.
+    glDisable(GL_CULL_FACE);
+
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -152,16 +160,23 @@ void UniformsApp::LoadContent()
 
     LoadTexture();
 
+    text = new Text("");
+
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
 void UniformsApp::Update(double deltaTime)
 {
     timer += 0.01f;
-    glUniform1f(glGetUniformLocation(shaderProgram, "timer"), timer);
+
+    glUseProgram(shaderProgram);
+    glUniform1f(timerUniformLocation, timer);
 }
 
 void UniformsApp::Draw()
 {
     DrawBuffer(shaderProgram);
+
+    text->Draw(0, "timer " + std::to_string(timer), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

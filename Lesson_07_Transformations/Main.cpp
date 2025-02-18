@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    TransformApp app(800, 800, "Lesson 06: Uniforms");
+    TransformApp app(800, 800, "Lesson 07: Transformations");
 
     app.Run();
 
