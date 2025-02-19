@@ -4,8 +4,6 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 
-float rgb[] = {0.0f, 0.0f, 0.0f};
-
 void ImGuiLessonApp::Draw()
 {
 	glClearColor(rgb[0], rgb[1], rgb[2], 1.0);
@@ -21,7 +19,7 @@ void ImGuiLessonApp::DrawGui()
 
     // Create UI
     ImGui::Begin("This is a demo window");
-    ImGui::ColorPicker3("Background Color", rgb);
+    ImGui::ColorPicker3("Background Color", rgb.data());
     ImGui::End();
 
     // Render UI

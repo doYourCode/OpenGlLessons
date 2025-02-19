@@ -112,7 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)GraphicsCommon;$(SolutionDir)vendor\imGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)GraphicsCommon;$(SolutionDir)vendor\imGui;$(SolutionDir)vendor\ImGuizmo;$(SolutionDir)vendor\imGuiColorTextEdit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -142,8 +142,15 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="GuiApplication.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\vendor\imGuiColorTextEdit\TextEditor.cpp" />
+    <ClCompile Include="..\vendor\ImGuizmo\GraphEditor.cpp" />
+    <ClCompile Include="..\vendor\ImGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="..\vendor\ImGuizmo\ImGradient.cpp" />
+    <ClCompile Include="..\vendor\ImGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="..\vendor\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="..\vendor\imGui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\vendor\imGui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\vendor\imGui\imgui.cpp" />
@@ -152,6 +159,7 @@
     <ClCompile Include="..\vendor\imGui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="GuiApplication.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphicsCommon\GraphicsCommon.vcxproj">

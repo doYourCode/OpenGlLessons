@@ -25,6 +25,10 @@ public:
 
 	virtual void LoadContent() { /* Empty for later overriding */ };
 
+	/// <summary>
+	/// Atualiza a lógica do programa.
+	/// </summary>
+	/// <param name="deltaTime"> O tempo gasto para atualizar o último tick. </param>
 	virtual void Update(double deltaTime) { /* Empty for later overriding */ };
 
 	virtual void Draw() { /* Empty for later overriding */ };

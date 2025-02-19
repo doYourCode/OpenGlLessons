@@ -1,13 +1,6 @@
 #include "LessonApp.h"
 
-float r = 0.0f;
-float g = 0.0f;
-float b = 0.0f;
-
-float ClampSwap(float x, float min, float max)
-{
-	return x > max ? min : x < min ? max : x;
-}
+#include "Utilities.h"
 
 void LessonApp::Update(double deltaTime)
 {
@@ -19,3 +12,4 @@ void LessonApp::Draw()
 {
 	glClearColor(r, g, b, 1.0);
 }
+

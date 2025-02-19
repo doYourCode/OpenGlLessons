@@ -13,3 +13,9 @@
 [submodule "vendor/freetype"]
 	path = vendor/freetype
 	url = https://github.com/freetype/freetype.git
+[submodule "vendor/ImGuizmo"]
+	path = vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
+[submodule "vendor/imGuiColorTextEdit"]
+	path = vendor/imGuiColorTextEdit
+	url = https://github.com/BalazsJako/ImGuiColorTextEdit.git
