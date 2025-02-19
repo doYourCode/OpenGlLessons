@@ -1,0 +1,308 @@
+#include "LightingApp.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
+#include "Shader.h"
+#include "Texture.h"
+#include "Camera.h"
+#include "Mesh.h"
+#include <Text.h>
+
+// timing
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
+
+bool firstMouse = true;
+float lastX = 800.0f / 2.0;
+float lastY = 600.0 / 2.0;
+
+unsigned int vao, vbo, ebo, colorVbo, texCoordVbo, normalVbo, shaderProgram;
+
+unsigned int texture1;
+
+// create transformations
+glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+
+Texture* texture;
+
+Camera camera;
+
+Mesh mesh;
+
+Text* text;
+
+// Variables
+
+glm::vec3 lightDirection = glm::vec3(-1.0f, 1.0f, -1.0f);
+unsigned int lightDirectionUniformLocation;
+
+glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+unsigned int lightColorUniformLocation;
+
+glm::vec3 ambientColor = glm::vec3(0.09f, 0.1f, 0.2f);
+unsigned int ambientColorUniformLocation;
+
+glm::vec3 cameraDirection = glm::vec3(0.0);
+unsigned int cameraDirectionUniformLocation;
+
+unsigned int modelUniformLocation;
+unsigned int viewUniformLocation;
+unsigned int projectionUniformLocation;
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f; // change this value to your liking
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    camera.Yaw += xoffset;
+    camera.Pitch += yoffset;
+
+    // make sure that when pitch is out of bounds, screen doesn't get flipped
+    if (camera.Pitch > 89.0f)
+        camera.Pitch = 89.0f;
+    if (camera.Pitch < -89.0f)
+        camera.Pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(camera.Yaw)) * cos(glm::radians(camera.Pitch));
+    front.y = sin(glm::radians(camera.Pitch));
+    front.z = sin(glm::radians(camera.Yaw)) * cos(glm::radians(camera.Pitch));
+    camera.Front = glm::normalize(front);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    camera.Zoom -= (float)yoffset;
+    if (camera.Zoom < 1.0f)
+        camera.Zoom = 1.0f;
+    if (camera.Zoom > 45.0f)
+        camera.Zoom = 45.0f;
+}
+
+void CreateBuffer()
+{
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &colorVbo);
+    glGenBuffers(1, &texCoordVbo);
+    glGenBuffers(1, &normalVbo);
+    glGenBuffers(1, &ebo);
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
+    glBufferData(GL_ARRAY_BUFFER, mesh.texCoords.size() * sizeof(float), mesh.texCoords.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, normalVbo);
+    glBufferData(GL_ARRAY_BUFFER, mesh.normals.size() * sizeof(float), mesh.normals.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(3);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size() * sizeof(unsigned int), mesh.indices.data(), GL_STATIC_DRAW);
+}
+
+void SetUniformsLocations(unsigned int shader)
+{
+    shader;
+    lightDirectionUniformLocation = glGetUniformLocation(shader, "lightDirection");
+    lightColorUniformLocation = glGetUniformLocation(shader, "lightColor");
+    ambientColorUniformLocation = glGetUniformLocation(shader, "ambientColor");
+    cameraDirectionUniformLocation = glGetUniformLocation(shader, "cameraDirection");
+}
+
+void SetUniformsValues(unsigned int shader)
+{
+    glUseProgram(shader);
+
+    glUniform3fv(lightDirectionUniformLocation, 1, glm::value_ptr(lightDirection));
+
+    glUniform3fv(lightColorUniformLocation, 1, glm::value_ptr(lightColor));
+
+    glUniform3fv(ambientColorUniformLocation, 1, glm::value_ptr(ambientColor));
+
+    glUniform3fv(cameraDirectionUniformLocation, 1, glm::value_ptr(cameraDirection));
+}
+
+void LoadShaderProgram()
+{
+    Shader::SetRootPath("../asset/shader/");
+    shaderProgram = Shader::CreateProgram("lambert.vert", "lambert.frag");
+
+    SetUniformsLocations(shaderProgram);
+    SetUniformsValues(shaderProgram);
+}
+
+void LoadTexture()
+{
+    // load and create a texture 
+// -------------------------
+
+    // texture 1
+    // ---------
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    // set the texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load image, create texture and generate mipmaps
+    int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(false); // tell stb_image.h to flip loaded texture's on the y-axis.
+    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
+    unsigned char* data = stbi_load("../asset/texture/suzanne.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+
+    stbi_image_free(data);
+
+    glUseProgram(shaderProgram);
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+}
+
+void LightingApp::DrawBuffer(unsigned int programId)
+{
+    glDisable(GL_CULL_FACE);
+
+    glEnable(GL_DEPTH_TEST);
+    // bind textures on corresponding texture units
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    glUseProgram(programId);
+
+    glUniformMatrix4fv(glGetUniformLocation(programId, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+
+    glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
+    glUniformMatrix4fv(glGetUniformLocation(programId, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)this->GetWidth() / (float)this->GetHeight(), 0.033f, 100.0f);
+    glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+    SetUniformsValues(programId);
+
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+}
+
+void LightingApp::LoadContent()
+{
+    mesh.loadFromFile("../asset/mesh/suzanne.obj");
+
+    CreateBuffer();
+
+    LoadShaderProgram();
+
+    LoadTexture();
+
+    camera.Position.z = -18.0f;
+    camera.Front.z = 1.0f;
+    camera.Up.y = 1.0f;
+    camera.Zoom = 5.0f;
+
+    text = new Text("");
+
+    glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
+
+    glfwMakeContextCurrent(this->GetWindow());
+    glfwSetFramebufferSizeCallback(this->GetWindow(), framebuffer_size_callback);
+    //glfwSetCursorPosCallback(this->window, mouse_callback);
+    glfwSetScrollCallback(this->GetWindow(), scroll_callback);
+    // tell GLFW to capture our mouse
+    glfwSetInputMode(this->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void LightingApp::Update(double deltaTime)
+{
+    float currentFrame = static_cast<float>(glfwGetTime());
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
+    transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+void LightingApp::Draw()
+{
+    DrawBuffer(shaderProgram);
+
+    text->Draw(0, "Mouse scroll to zoom in/out", 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+}
+
+void LightingApp::DrawGui()
+{
+    glDisable(GL_DEPTH_TEST);
+    // Start ImGui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // Create UI
+    ImGui::Begin("Light Controls");
+    ImGui::SliderFloat3("Light Direction", glm::value_ptr(lightDirection), -1.0f, 1.0f);
+    ImGui::ColorPicker3("Light Color", glm::value_ptr(lightColor));
+    ImGui::ColorPicker3("Ambient Color", glm::value_ptr(ambientColor));
+    ImGui::End();
+
+    // Render UI
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
