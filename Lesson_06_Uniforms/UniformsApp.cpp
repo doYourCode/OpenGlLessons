@@ -177,6 +177,6 @@ void UniformsApp::Draw()
 {
     DrawBuffer(shaderProgram);
 
-    text->Draw(0, "timer " + std::to_string(timer), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("timer " + std::to_string(timer), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

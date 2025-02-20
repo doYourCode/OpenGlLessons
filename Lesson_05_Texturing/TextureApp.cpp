@@ -2,38 +2,49 @@
 
 #include "Shader.h"
 #include "Texture.h"
-#include "Text.h"
 
-float verticesData[] =
+#include <array>
+
+const std::array<float, 9> verticesData =
 {    // x   // y    // z    //
     -0.5f, -0.5f,   0.0f,   // Vértice inferior esquerdo
      0.5f, -0.5f,   0.0f,   // inferior direito
      0.0f,  0.5f,   0.0f    // superior
 };
 
-float colorData[] =
+const std::array<float, 9> colorData =
 {   // R    // G    // B
     1.0f,   0.0f,   0.0f,
     0.0f,   1.0f,   0.0f,
     0.0f,   0.0f,   1.0f
 };
 
-float texCoordData[] =
+const std::array<float, 6> texCoordData =
 {   // U    // V
     0.0f,   1.0f,
     1.0f,   1.0f,
     0.5f,   0.0f
 };
 
-unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram;
+void TextureApp::LoadContent()
+{
+    CreateBuffer();
 
-unsigned int texture1, texture2;
+    LoadShaderProgram();
 
-Texture* texture;
+    LoadTexture();
 
-Text* text;
+    glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
+}
 
-void CreateBuffer()
+void TextureApp::Draw()
+{
+    DrawBuffer();
+
+    text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+}
+
+void TextureApp::CreateBuffer()
 {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -43,31 +54,31 @@ void CreateBuffer()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(2);
 }
 
-void LoadShaderProgram()
+void TextureApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("texture.vert", "texture.frag");
+    shader = Shader::CreateProgram("texture.vert", "texture.frag");
 }
 
-void LoadTexture()
+void TextureApp::LoadTexture()
 {
     // load and create a texture 
 // -------------------------
@@ -83,7 +94,9 @@ void LoadTexture()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
+    int width;
+    int height;
+    int nrChannels;
     stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
     unsigned char* data = stbi_load("../asset/texture/uvChecker.jpg", &width, &height, &nrChannels, 0);
@@ -123,12 +136,12 @@ void LoadTexture()
     }
     stbi_image_free(data2);
 
-    glUseProgram(shaderProgram);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
+    glUseProgram(shader);
+    glUniform1i(glGetUniformLocation(shader, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shader, "texture2"), 1);
 }
 
-void DrawBuffer(unsigned int programId)
+void TextureApp::DrawBuffer() const
 {
     // We need to clear the draw state after the text rendering.
     glDisable(GL_CULL_FACE);
@@ -139,28 +152,8 @@ void DrawBuffer(unsigned int programId)
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2);
 
-    glUseProgram(programId);
+    glUseProgram(this->shader);
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-void TextureApp::LoadContent()
-{
-    CreateBuffer();
-
-    LoadShaderProgram();
-
-    LoadTexture();
-
-    text = new Text("");
-
-    glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
-}
-
-void TextureApp::Draw()
-{
-    DrawBuffer(shaderProgram);
-
-    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

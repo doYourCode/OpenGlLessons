@@ -1,4 +1,5 @@
 #include "AttribApp.h"
+
 #include <glad.c>
 
 int main(void)

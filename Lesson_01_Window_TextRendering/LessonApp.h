@@ -19,5 +19,5 @@ private:
     float g = 0.0f;
     float b = 0.0f;
 
-    Text text = Text("");;
+    Text text = Text("");
 };

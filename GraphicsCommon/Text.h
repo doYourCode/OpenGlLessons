@@ -14,7 +14,8 @@
 #include "Shader.h"
 
 /// Holds all state information relevant to a character as loaded using FreeType
-struct Character {
+struct Character
+{
     unsigned int TextureID; // ID handle of the glyph texture
     glm::ivec2   Size;      // Size of glyph
     glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
@@ -24,14 +25,20 @@ struct Character {
 class Text
 {
 public:
-    Text(const char* filePath);
 
-    void Draw(unsigned int shader, std::string text, float x, float y, float scale, glm::vec3 color);
+    explicit Text(const char* filePath = "");
 
-	static void SetRootPath(const std::string path) { Text::rootPath = path; }
+    void Draw(std::string text, float x, float y, float scale, const glm::vec3& color);
+
+	static void SetRootPath(const std::string& path) { Text::rootPath = path; }
 
 private:
+
     std::map<GLchar, Character> Characters;
-    unsigned int VAO, VBO, shader;
+
+    unsigned int vao = 0;
+    unsigned int vbo = 0;
+    unsigned int shader = 0;
+
 	static std::string rootPath;
 };

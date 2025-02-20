@@ -1,27 +1,40 @@
 #include "AttribApp.h"
 
 #include "Shader.h"
-#include "Text.h"
 
-float verticesData[] =
+#include <array>
+
+const std::array<float, 9> verticesData =
 {    // x   // y    // z    //
     -0.5f, -0.5f,   0.0f,   // Vértice inferior esquerdo
      0.5f, -0.5f,   0.0f,   // inferior direito
      0.0f,  0.5f,   0.0f    // superior
 };
 
-float colorData[] =
+const std::array<float, 9> colorData =
 {   // R    // G    // B
     1.0f,   0.0f,   0.0f,
     0.0f,   1.0f,   0.0f,
     0.0f,   0.0f,   1.0f
 };
 
-unsigned int vao, vbo, colorVbo, shaderProgram;
+void AttribApp::LoadContent()
+{
+    CreateBuffer();
 
-Text* text;
+    LoadShaderProgram();
 
-void CreateBuffer()
+    glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
+}
+
+void AttribApp::Draw()
+{
+    DrawBuffer();
+
+    text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+}
+
+void AttribApp::CreateBuffer()
 {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -30,48 +43,30 @@ void CreateBuffer()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(1);
 }
 
-void LoadShaderProgram()
+void AttribApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("attrib.vert", "attrib.frag");
+    shader = Shader::CreateProgram("attrib.vert", "attrib.frag");
 }
 
-void DrawBuffer(unsigned int programId)
+void AttribApp::DrawBuffer() const
 {
     // We need to clear the draw state after the text rendering.
     glDisable(GL_CULL_FACE);
-    glUseProgram(programId);
+    glUseProgram(this->shader);
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
-}
-
-void AttribApp::LoadContent()
-{
-    CreateBuffer();
-
-    LoadShaderProgram();
-
-    text = new Text("");
-
-    glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
-}
-
-void AttribApp::Draw()
-{
-    DrawBuffer(shaderProgram);
-
-    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

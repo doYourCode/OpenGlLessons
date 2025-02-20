@@ -161,6 +161,6 @@ void TransformApp::Draw()
 
     glm::decompose(transform, scale, rotation, translation, skew, _perspective);
 
-    text->Draw(0, "rotation x: 0.0, y: 0.0, z: " + std::to_string(rotation.z), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("rotation x: 0.0, y: 0.0, z: " + std::to_string(rotation.z), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

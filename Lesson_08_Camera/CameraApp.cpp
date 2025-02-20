@@ -262,7 +262,7 @@ void CameraApp::Draw()
 {
     DrawBuffer(shaderProgram);
 
-    text->Draw(0, "Mouse scroll to zoom in/out", 32, 96, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw(0, "fov " + std::to_string(camera.Zoom), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw(0, "Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("Mouse scroll to zoom in/out", 32, 96, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("fov " + std::to_string(camera.Zoom), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text->Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }
