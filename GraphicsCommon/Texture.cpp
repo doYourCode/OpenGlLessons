@@ -34,7 +34,7 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
 	// Check what type of color channels the texture has and load it accordingly
-	/*if (numColCh == 4)
+	if (numColCh == 4)
 		glTexImage2D
 		(
 			GL_TEXTURE_2D,
@@ -74,10 +74,10 @@ Texture::Texture(const char* image, const char* texType, GLuint slot)
 			bytes
 		);
 	else
-		throw std::invalid_argument("Automatic Texture type recognition failed");*/
+		throw std::invalid_argument("Automatic Texture type recognition failed");
 
 	// Generates MipMaps
-	//glGenerateMipmap(GL_TEXTURE_2D);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Deletes the image data as it is already in the OpenGL Texture object
 	stbi_image_free(bytes);
@@ -100,4 +100,9 @@ void Texture::Bind() const
 {
 	glActiveTexture(GL_TEXTURE0 + unit);
 	glBindTexture(GL_TEXTURE_2D, ID);
+}
+
+unsigned int Texture::LoadFromFile(std::string const& filePath)
+{
+	return 0;
 }

@@ -8,9 +8,9 @@ public:
 
     MeshLoader(int width, int height, const char* title) : Application(width, height, title) {};
 
-    void LoadContent();
+    void LoadContent() final;
 
-    void Update(double deltaTime);
+    void Update(double deltaTime) final;
 
-    void Draw();
+    void Draw() final;
 };

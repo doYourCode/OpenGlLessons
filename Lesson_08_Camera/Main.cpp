@@ -1,4 +1,5 @@
 #include "CameraApp.h"
+
 #include <glad.c>
 
 int main(void)

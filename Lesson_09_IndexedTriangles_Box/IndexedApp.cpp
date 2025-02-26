@@ -169,7 +169,7 @@ void CreateBuffer()
 void LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("camera.vert", "camera.frag");
+    shaderProgram = Shader::CreateProgram("Shader", "camera.vert", "camera.frag");
 }
 
 void LoadTexture()

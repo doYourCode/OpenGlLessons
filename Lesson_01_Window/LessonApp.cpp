@@ -1,15 +1,15 @@
 #include "LessonApp.h"
 
-#include "Utilities.h"
+#include "MathUtils.h"
 
 void LessonApp::Update(double deltaTime)
 {
-	r += 0.333f * (float)deltaTime;
-	r = ClampSwap(r, 0.0f, 1.0f);
+	this->r += 0.333f * (float)deltaTime;
+	this->r = Utils::Math::ClampSwap(this->r, 0.0f, 1.0f);
 }
 
 void LessonApp::Draw()
 {
-	glClearColor(r, g, b, 1.0);
+	glClearColor(this->r, this->g, this->b, 1.0);
 }
 

@@ -112,7 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)GraphicsCommon;$(SolutionDir)vendor\imGui;$(SolutionDir)vendor\ImGuizmo;$(SolutionDir)vendor\imGuiColorTextEdit;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)GraphicsCommon;$(SolutionDir)vendor\imGui;$(SolutionDir)vendor\ImGuizmo;$(SolutionDir)vendor\imGuiColorTextEdit;$(SolutionDir)ApplicationCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -142,7 +142,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="GuiApplication.h" />
-    <ClInclude Include="Utilities.h" />
+    <ClInclude Include="tinyfiledialogs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\vendor\imGuiColorTextEdit\TextEditor.cpp" />
@@ -158,8 +158,9 @@
     <ClCompile Include="..\vendor\imGui\imgui_tables.cpp" />
     <ClCompile Include="..\vendor\imGui\imgui_widgets.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="GlslTokens.h" />
     <ClCompile Include="GuiApplication.cpp" />
-    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="tinyfiledialogs.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphicsCommon\GraphicsCommon.vcxproj">

@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)ApplicationCommon;$(SolutionDir)vendor\imGui;$(SolutionDir)GraphicsCommon;$(SolutionDir)vendor\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\Glfw\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\glad\include;$(SolutionDir)vendor\glad\src;$(SolutionDir)ApplicationCommon;$(SolutionDir)vendor\imGui;$(SolutionDir)GraphicsCommon;$(SolutionDir)vendor\assimp\include;$(SolutionDir)LessonsCommon;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,11 +132,9 @@
   <ItemGroup>
     <ClCompile Include="LightingApp.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LightingApp.h" />
-    <ClInclude Include="Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCommon\ApplicationCommon.vcxproj">
@@ -144,6 +142,9 @@
     </ProjectReference>
     <ProjectReference Include="..\GraphicsCommon\GraphicsCommon.vcxproj">
       <Project>{b38ef8e7-9a21-40ff-9267-de7eaee4c821}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LessonsCommon\LessonsCommon.vcxproj">
+      <Project>{35e7102d-5665-4a6c-a65e-6b89e21c2f7d}</Project>
     </ProjectReference>
     <ProjectReference Include="..\vendor\assimp\code\assimp.vcxproj">
       <Project>{9463bd1a-a3ae-32d3-a0c7-337a06b3d951}</Project>

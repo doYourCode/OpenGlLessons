@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stack>
 
-class Mesh
+class Mesh_PosColUvNormals
 {
 public:
 
@@ -22,7 +22,5 @@ private:
 
     void processNode(aiNode* root, const aiScene* scene);
 
-    void processMesh(aiMesh* mesh, const aiScene* scene);
+    void processMesh(const aiMesh& mesh, const aiScene* scene);
 };
-
-

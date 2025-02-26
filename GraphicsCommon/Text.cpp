@@ -112,7 +112,7 @@ Text::Text(const char* filePath)
     glGetIntegerv(GL_VIEWPORT, m_viewport);
 
     Shader::SetRootPath("../asset/shader/");
-    shader = Shader::CreateProgram("text.vert", "text.frag");
+    shader = Shader::CreateProgram("Text Shader","text.vert", "text.frag");
 
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_viewport[2]), 0.0f, static_cast<float>(m_viewport[3]));
     

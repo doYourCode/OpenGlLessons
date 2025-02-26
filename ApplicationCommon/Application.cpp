@@ -93,6 +93,10 @@ void Application::Run()
     }
 }
 
+void Application::Exit()
+{
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
 
 [[ noreturn ]] void Application::Clear()
 {

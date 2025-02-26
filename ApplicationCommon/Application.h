@@ -21,6 +21,8 @@ public:
 
 	virtual void Run();
 
+	virtual void Exit();
+
 	void Clear();
 
 	virtual void LoadContent() { /* Empty for later overriding */ };

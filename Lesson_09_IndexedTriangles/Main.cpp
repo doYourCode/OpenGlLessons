@@ -1,4 +1,5 @@
 #include "IndexedApp.h"
+
 #include <glad.c>
 
 int main(void)

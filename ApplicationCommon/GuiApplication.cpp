@@ -12,13 +12,15 @@ GuiApplication::GuiApplication(int width, int height, const char* title)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(this->GetWindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    ImGui_ImplOpenGL3_Init("#version 460");
+
 }
 
 void GuiApplication::Run()
@@ -27,9 +29,6 @@ void GuiApplication::Run()
 
     int viewportWidth;
     int viewportHeight;
-    /// 
-    ///////////////////
-    /// 
 
     while (!glfwWindowShouldClose(this->GetWindow()))
     {

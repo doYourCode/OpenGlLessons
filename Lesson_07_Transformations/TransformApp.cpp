@@ -8,130 +8,84 @@
 
 #include "Shader.h"
 #include "Texture.h"
-#include "Text.h"
 
-float verticesData[] =
+#include <array>
+#include <Texture2D.h>
+
+const std::array<float, 9> verticesData =
 {    // x   // y    // z    //
     -0.5f, -0.5f,   0.0f,   // Vértice inferior esquerdo
      0.5f, -0.5f,   0.0f,   // inferior direito
      0.0f,  0.5f,   0.0f    // superior
 };
 
-float colorData[] =
+const std::array<float, 9> colorData =
 {   // R    // G    // B
     1.0f,   0.0f,   0.0f,
     0.0f,   1.0f,   0.0f,
     0.0f,   0.0f,   1.0f
 };
 
-float texCoordData[] =
+const std::array<float, 6> texCoordData =
 {   // U    // V
     0.0f,   1.0f,
     1.0f,   1.0f,
     0.5f,   0.0f
 };
 
-unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram;
-
-unsigned int texture1;
-
-// create transformations
-glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-
-glm::vec3 scale;
-glm::quat rotation;
-glm::vec3 translation;
-glm::vec3 skew;
-glm::vec4 _perspective;
-
-Texture* texture;
-
-Text* text;
-
-void CreateBuffer()
+void TransformApp::CreateBuffer()
 {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &colorVbo);
-    glGenBuffers(1, &texCoordVbo);
+    glGenVertexArrays(1, &this->vao);
+    glGenBuffers(1, &this->vbo);
+    glGenBuffers(1, &this->colorVbo);
+    glGenBuffers(1, &this->texCoordVbo);
 
-    glBindVertexArray(vao);
+    glBindVertexArray(this->vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, this->colorVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(1);
 
-    glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, this->texCoordVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(2);
 }
 
-void LoadShaderProgram()
+void TransformApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("transforms.vert", "transforms.frag");
+    this->shader = Shader::CreateProgram("Rotating Triangle Shader", "transforms.vert", "transforms.frag");
 }
 
-void LoadTexture()
+void TransformApp::LoadTexture()
 {
-    // load and create a texture 
-// -------------------------
+    this->texture1 = Texture2D::LoadFromFile("../asset/texture/uvChecker.jpg");
 
-    // texture 1
-    // ---------
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(false); // tell stb_image.h to flip loaded texture's on the y-axis.
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char* data = stbi_load("../asset/texture/uvChecker.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    glUseProgram(shaderProgram);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+    glUseProgram(this->shader);
+    glUniform1i(glGetUniformLocation(this->shader, "texture1"), 0);
 }
 
-void DrawBuffer(unsigned int programId)
+void TransformApp::DrawBuffer() const
 {
     // We need to clear the draw state after the text rendering.
     glDisable(GL_CULL_FACE);
 
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    glBindTexture(GL_TEXTURE_2D, this->texture1);
 
-    glUseProgram(programId);
+    glUseProgram(this->shader);
 
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "transform"), 1, GL_FALSE, glm::value_ptr(this->transform));
 
-    glBindVertexArray(vao);
+    glBindVertexArray(this->vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
@@ -143,24 +97,22 @@ void TransformApp::LoadContent()
 
     LoadTexture();
 
-    text = new Text("");
-
     glClearColor(0.3f, 0.35f, 0.4f, 1.0f);
 }
 
 void TransformApp::Update(double deltaTime)
 {
-    transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, 0.0f));
-    transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
+    this->transform = glm::translate(this->transform, glm::vec3(0.0f, 0.0f, 0.0f));
+    this->transform = glm::rotate(this->transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 
 void TransformApp::Draw()
 {
-    DrawBuffer(shaderProgram);
+    DrawBuffer();
 
-    glm::decompose(transform, scale, rotation, translation, skew, _perspective);
+    glm::decompose(this->transform, this->scale, this->rotation, this->translation, this->skew, this->_perspective);
 
-    text->Draw("rotation x: 0.0, y: 0.0, z: " + std::to_string(rotation.z), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    this->text.Draw("rotation x: 0.0, y: 0.0, z: " + std::to_string(this->rotation.z), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    this->text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

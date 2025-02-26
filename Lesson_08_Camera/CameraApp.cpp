@@ -7,23 +7,25 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
-#include "Text.h"
 
-float verticesData[] =
+#include <array>
+#include <Texture2D.h>
+
+const std::array<float, 9> verticesData =
 {    // x   // y    // z    //
     -0.5f, -0.5f,   0.0f,   // Vértice inferior esquerdo
      0.5f, -0.5f,   0.0f,   // inferior direito
      0.0f,  0.5f,   0.0f    // superior
 };
 
-float colorData[] =
+const std::array<float, 9> colorData =
 {   // R    // G    // B
     1.0f,   0.0f,   0.0f,
     0.0f,   1.0f,   0.0f,
     0.0f,   0.0f,   1.0f
 };
 
-float texCoordData[] =
+const std::array<float, 6> texCoordData =
 {   // U    // V
     0.0f,   1.0f,
     1.0f,   1.0f,
@@ -38,18 +40,9 @@ bool firstMouse = true;
 float lastX = 800.0f / 2.0;
 float lastY = 600.0 / 2.0;
 
-unsigned int vao, vbo, colorVbo, texCoordVbo, shaderProgram;
-
-unsigned int texture1;
-
-// create transformations
-glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-
-Texture* texture;
 
 Camera camera;
 
-Text* text;
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -128,7 +121,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         camera.Zoom = 90.0f;
 }
 
-void CreateBuffer()
+void CameraApp::CreateBuffer()
 {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -138,67 +131,39 @@ void CreateBuffer()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(2);
 }
 
-void LoadShaderProgram()
+void CameraApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("camera.vert", "camera.frag");
+    this->shader = Shader::CreateProgram("Perspective Shader", "camera.vert", "camera.frag");
 }
 
-void LoadTexture()
+void CameraApp::LoadTexture()
 {
-    // load and create a texture 
-// -------------------------
+    this->texture1 = Texture2D::LoadFromFile("../asset/texture/uvChecker.jpg");
 
-    // texture 1
-    // ---------
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    // set the texture wrapping parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(false); // tell stb_image.h to flip loaded texture's on the y-axis.
-    // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-    unsigned char* data = stbi_load("../asset/texture/uvChecker.jpg", &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    glUseProgram(shaderProgram);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+    glUseProgram(this->shader);
+    glUniform1i(glGetUniformLocation(this->shader, "texture1"), 0);
 }
 
-void DrawBuffer(unsigned int programId)
+void CameraApp::DrawBuffer() const
 {
     glDisable(GL_CULL_FACE);
 
@@ -206,15 +171,15 @@ void DrawBuffer(unsigned int programId)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
 
-    glUseProgram(programId);
+    glUseProgram(this->shader);
 
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 
     glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)800 / (float)800, 0.033f, 100.0f);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection)); 
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)this->GetWidth() / (float)this->GetHeight(), 0.033f, 100.0f);
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -241,17 +206,11 @@ void CameraApp::LoadContent()
     glfwSetScrollCallback(this->GetWindow(), scroll_callback);
     // tell GLFW to capture our mouse
     glfwSetInputMode(this->GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    text = new Text("");
 }
 
 void CameraApp::Update(double deltaTime)
 {
     processInput(this->GetWindow());
-
-    float currentFrame = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
 
     transform = glm::translate(transform, camera.Position);
     transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -260,9 +219,9 @@ void CameraApp::Update(double deltaTime)
 
 void CameraApp::Draw()
 {
-    DrawBuffer(shaderProgram);
+    DrawBuffer();
 
-    text->Draw("Mouse scroll to zoom in/out", 32, 96, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw("fov " + std::to_string(camera.Zoom), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
-    text->Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text.Draw("Mouse scroll to zoom in/out", 32, 96, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text.Draw("fov " + std::to_string(camera.Zoom), 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }

@@ -10,10 +10,6 @@
 #include "Mesh.h"
 #include <Text.h>
 
-// timing
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
-
 bool firstMouse = true;
 float lastX = 800.0f / 2.0;
 float lastY = 600.0 / 2.0;
@@ -126,7 +122,7 @@ void CreateBuffer()
 void LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("mesh.vert", "mesh.frag");
+    shaderProgram = Shader::CreateProgram("Shader", "mesh.vert", "mesh.frag");
 }
 
 void LoadTexture()
@@ -217,10 +213,6 @@ void MeshLoader::LoadContent()
 
 void MeshLoader::Update(double deltaTime)
 {
-    float currentFrame = static_cast<float>(glfwGetTime());
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
-
     transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 

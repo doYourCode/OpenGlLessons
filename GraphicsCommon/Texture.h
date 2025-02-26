@@ -13,13 +13,9 @@
 
 struct Texture
 {
-	GLuint ID;
-
-	const char* type;
-
+public:
 
 	Texture(const char* image, const char* texType, GLuint slot);
-
 
 	void TexUnit(unsigned int programId, const char* uniform, GLuint unit) const;
 
@@ -29,10 +25,15 @@ struct Texture
 
 	void Delete() const { glDeleteTextures(1, &ID); }
 
+	static unsigned int LoadFromFile(std::string const& filePath);
 
-	static void SetRootPath(std::string path) { Texture::rootPath = path; }
+	static void SetRootPath(std::string const& rPath) { Texture::rootPath = rPath; }
 
 private:
+
+	GLuint ID;
+
+	const char* type;
 
 	GLuint unit;
 

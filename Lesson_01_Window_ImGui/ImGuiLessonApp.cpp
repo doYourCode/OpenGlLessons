@@ -6,7 +6,7 @@
 
 void ImGuiLessonApp::Draw()
 {
-	glClearColor(rgb[0], rgb[1], rgb[2], 1.0);
+	glClearColor(this->rgb[0], this->rgb[1], this->rgb[2], 1.0);
 }
 
 void ImGuiLessonApp::DrawGui()
@@ -19,7 +19,7 @@ void ImGuiLessonApp::DrawGui()
 
     // Create UI
     ImGui::Begin("This is a demo window");
-    ImGui::ColorPicker3("Background Color", rgb.data());
+    ImGui::ColorPicker3("Background Color", this->rgb.data());
     ImGui::End();
 
     // Render UI

@@ -19,3 +19,6 @@
 [submodule "vendor/imGuiColorTextEdit"]
 	path = vendor/imGuiColorTextEdit
 	url = https://github.com/BalazsJako/ImGuiColorTextEdit.git
+[submodule "vendor/OpenXLSX"]
+	path = vendor/OpenXLSX
+	url = https://github.com/troldal/OpenXLSX.git

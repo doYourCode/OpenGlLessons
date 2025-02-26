@@ -8,7 +8,9 @@
 #include "Texture.h"
 #include "Camera.h"
 
-float verticesData[] =
+#include <array>
+
+const std::array<float, 12> verticesData =
 {    // x   // y    // z    //
      0.5f,  0.5f,   0.0f,   // Vértice inferior esquerdo
      0.5f, -0.5f,   0.0f,   // inferior direito
@@ -16,7 +18,7 @@ float verticesData[] =
     -0.5f,  0.5f,   0.0f
 };
 
-float colorData[] =
+const std::array<float, 12> colorData =
 {   // R    // G    // B
     1.0f,   0.0f,   0.0f,
     0.0f,   1.0f,   0.0f,
@@ -25,7 +27,7 @@ float colorData[] =
 
 };
 
-float texCoordData[] =
+const std::array<float, 8> texCoordData =
 {   // U    // V
     1.0f,   1.0f,
     1.0f,   0.0f,
@@ -33,7 +35,7 @@ float texCoordData[] =
     0.0f,   1.0f
 };
 
-unsigned int indices[] =
+const std::array<unsigned int, 6>  indices =
 {
     0, 1, 3, 1, 2, 3
 };
@@ -45,15 +47,6 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 float lastX = 800.0f / 2.0;
 float lastY = 600.0 / 2.0;
-
-unsigned int vao, vbo, ebo, colorVbo, texCoordVbo, shaderProgram;
-
-unsigned int texture1;
-
-// create transformations
-glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-
-Texture* texture;
 
 Camera camera;
 
@@ -134,7 +127,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         camera.Zoom = 45.0f;
 }
 
-void CreateBuffer()
+void IndexedApp::CreateBuffer()
 {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -145,34 +138,34 @@ void CreateBuffer()
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(texCoordData), texCoordData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
 }
 
-void LoadShaderProgram()
+void IndexedApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shaderProgram = Shader::CreateProgram("camera.vert", "camera.frag");
+    this->shader = Shader::CreateProgram("Shader", "camera.vert", "camera.frag");
 }
 
-void LoadTexture()
+void IndexedApp::LoadTexture()
 {
     // load and create a texture 
 // -------------------------
@@ -204,25 +197,25 @@ void LoadTexture()
 
     stbi_image_free(data);
 
-    glUseProgram(shaderProgram);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+    glUseProgram(this->shader);
+    glUniform1i(glGetUniformLocation(this->shader, "texture1"), 0);
 }
 
-void DrawBuffer(unsigned int programId)
+void IndexedApp::DrawBuffer() const
 {
     // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
 
-    glUseProgram(programId);
+    glUseProgram(this->shader);
 
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 
     glm::mat4 view = glm::lookAt(camera.Position, camera.Position + camera.Front, camera.Up);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
 
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)800 / (float)800, 0.033f, 100.0f);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(this->shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(vao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -266,5 +259,5 @@ void IndexedApp::Update(double deltaTime)
 
 void IndexedApp::Draw()
 {
-    DrawBuffer(shaderProgram);
+    DrawBuffer();
 }

@@ -24,17 +24,17 @@ void ShaderApp::Draw()
 {
     DrawBuffer();
 
-    text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    this->text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }
 
 void ShaderApp::CreateBuffer()
 {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
+    glGenVertexArrays(1, &this->vao);
+    glGenBuffers(1, &this->vbo);
 
-    glBindVertexArray(vao);
+    glBindVertexArray(this->vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
@@ -44,7 +44,7 @@ void ShaderApp::CreateBuffer()
 void ShaderApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shader = Shader::CreateProgram("basic.vert", "basic.frag");
+    this->shader = Shader::CreateProgram("Basic Shader", "basic.vert", "basic.frag");
 }
 
 void ShaderApp::DrawBuffer() const
@@ -53,6 +53,6 @@ void ShaderApp::DrawBuffer() const
     glDisable(GL_CULL_FACE);
     glUseProgram(this->shader);
 
-    glBindVertexArray(vao);
+    glBindVertexArray(this->vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }

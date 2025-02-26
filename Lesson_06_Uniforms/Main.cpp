@@ -1,4 +1,5 @@
 #include "UniformsApp.h"
+
 #include <glad.c>
 
 int main(void)

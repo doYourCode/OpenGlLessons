@@ -31,24 +31,24 @@ void AttribApp::Draw()
 {
     DrawBuffer();
 
-    text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
+    this->text.Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
 }
 
 void AttribApp::CreateBuffer()
 {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &colorVbo);
+    glGenVertexArrays(1, &this->vao);
+    glGenBuffers(1, &this->vbo);
+    glGenBuffers(1, &this->colorVbo);
 
-    glBindVertexArray(vao);
+    glBindVertexArray(this->vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticesData), verticesData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
     glEnableVertexAttribArray(0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, this->colorVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
@@ -58,7 +58,7 @@ void AttribApp::CreateBuffer()
 void AttribApp::LoadShaderProgram()
 {
     Shader::SetRootPath("../asset/shader/");
-    shader = Shader::CreateProgram("attrib.vert", "attrib.frag");
+    this->shader = Shader::CreateProgram("Colored Triangle Shader", "attrib.vert", "attrib.frag");
 }
 
 void AttribApp::DrawBuffer() const
@@ -67,6 +67,6 @@ void AttribApp::DrawBuffer() const
     glDisable(GL_CULL_FACE);
     glUseProgram(this->shader);
 
-    glBindVertexArray(vao);
+    glBindVertexArray(this->vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
