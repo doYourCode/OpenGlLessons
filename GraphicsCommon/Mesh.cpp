@@ -1,6 +1,6 @@
-#include "ModelRenderer.h"
+#include "Mesh.h"
 
-RenderMesh::RenderMesh(MeshData& data, MeshFormat& format)
+StaticMesh::StaticMesh(VertexData& data, VertexFormat& format)
 {
 	glGenVertexArrays(1, &this->renderVao);
 
@@ -28,9 +28,13 @@ RenderMesh::RenderMesh(MeshData& data, MeshFormat& format)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(data.indices), data.indices.data(), GL_STATIC_DRAW);
 
-		glBindVertexArray(this->shadowVao);
+		glBindVertexArray(this->positionVao);
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbos[0]); // as far as index 0 is for position.
 
 		glBindVertexArray(0);
 	}
+}
+
+void VertexData::CreateFromAssimpMesh(VertexData& meshDataInstance, aiMesh* assimpMesh)
+{
 }

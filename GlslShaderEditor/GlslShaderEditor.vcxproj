@@ -134,13 +134,11 @@
     <ClCompile Include="AppUI.cpp" />
     <ClCompile Include="EditorApp.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ModelRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppUI.h" />
     <ClInclude Include="EditorApp.h" />
     <ClInclude Include="IconsFontAwesome5.h" />
-    <ClInclude Include="ModelRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ApplicationCommon\ApplicationCommon.vcxproj">

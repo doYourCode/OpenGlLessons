@@ -41,9 +41,9 @@ private:
 
     bool canCompile = false;
 
-    void SaveToFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray);
+    const void SaveToFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray);
 
-    void LoadFromFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray);
+    const void LoadFromFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray);
 
     void TryToCompile(TextEditor& textEditor);
 };

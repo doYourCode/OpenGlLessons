@@ -15,16 +15,15 @@
 #include "Shader.h"
 #include <iostream>
 
+#include <FileUtils.h>
+
 static const ImVec4 activeCompileButtonColor = ImVec4(0.2f, 0.9f, 0.22f, 1.0f);
 
 static const ImVec4 inactiveCompileButtonColor = ImVec4(0.9f, 0.2f, 0.22f, 1.0f);
 
 void SetupImGuiStyle();
 
-std::string loadFileToString(const std::string& filename);
-
-void DrawGuiTests();
-
+/*
 std::string loadFileToString(const std::string& filename)
 {
 	try 
@@ -70,6 +69,7 @@ bool saveStringToFile(const std::string& filename, const std::string& content)
 		return false;
 	}
 }
+*/
 
 EditorApp::EditorApp(int width, int height, const char* title) : GuiApplication(width, height, title)
 {
@@ -194,24 +194,24 @@ void EditorApp::DrawGuiTests()
 	DrawViewport();
 }
 
-void EditorApp::SaveToFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray)
+const void EditorApp::SaveToFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray)
 {
-	auto filePath = tinyfd_saveFileDialog("Select a file", textEditor.currentFileToEdit.c_str(), (int)filtersArray.size(), filtersArray.data(), nullptr);
-	if (filePath)
+	auto filePath = Utils::File::SaveDialog("Select a file", textEditor.currentFileToEdit, filtersArray);
+	if (!filePath.empty())
 	{
 		textEditor.currentFileToEdit = std::filesystem::path(filePath).filename().string();
 		auto text = textEditor.GetText();
-		saveStringToFile(filePath, text);
+		Utils::File::SaveFromString(filePath, text);
 	}
 }
 
-void EditorApp::LoadFromFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray)
+const void EditorApp::LoadFromFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray)
 {
-	auto filePath = tinyfd_openFileDialog("Select a file", "", (int)filtersArray.size(), filtersArray.data(), nullptr, false);
-	if (filePath)
+	auto filePath = Utils::File::LoadDialog("Select a file", filtersArray);
+	if (!filePath.empty())
 	{
 		textEditor.currentFileToEdit = std::filesystem::path(filePath).filename().string();
-		auto file = loadFileToString(filePath);
+		auto file = Utils::File::LoadToString(filePath);
 		textEditor.SetText(file);
 	}
 }
@@ -275,6 +275,7 @@ void EditorApp::TextEditorRender(TextEditor& textEditor, const std::string& edit
 	}
 	ImGui::PopStyleColor();
 	
+	/*
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -330,6 +331,7 @@ void EditorApp::TextEditorRender(TextEditor& textEditor, const std::string& edit
 
 		ImGui::EndMenuBar();
 	}
+	*/
 
 	ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, textEditor.GetTotalLines(),
 		textEditor.IsOverwrite() ? "Ovr" : "Ins",
