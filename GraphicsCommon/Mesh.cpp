@@ -34,7 +34,3 @@ StaticMesh::StaticMesh(VertexData& data, VertexFormat& format)
 		glBindVertexArray(0);
 	}
 }
-
-void VertexData::CreateFromAssimpMesh(VertexData& meshDataInstance, aiMesh* assimpMesh)
-{
-}

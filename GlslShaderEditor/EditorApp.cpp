@@ -17,6 +17,8 @@
 
 #include <FileUtils.h>
 
+#include "framebuffer.h"
+
 static const ImVec4 activeCompileButtonColor = ImVec4(0.2f, 0.9f, 0.22f, 1.0f);
 
 static const ImVec4 inactiveCompileButtonColor = ImVec4(0.9f, 0.2f, 0.22f, 1.0f);
@@ -105,6 +107,13 @@ void EditorApp::LoadContent()
 	icons_config.GlyphMinAdvanceX = iconFontSize;
 	io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAR, iconFontSize, &icons_config, icons_ranges);
 	std::cout << io.Fonts->Fonts.Size;
+
+
+	// FROM FRAMEBUFFER EXAMPLE -> todo: FIX IT
+
+	create_triangle();
+	create_shaders();
+	create_framebuffer();
 }
 
 void EditorApp::Update(double deltaTime)
@@ -130,9 +139,38 @@ void EditorApp::DrawGui()
 
     ImGui::DockSpaceOverViewport();
 
+	ImGui::Begin("My Scene");
+
+	const float window_width = ImGui::GetContentRegionAvail().x;
+	const float window_height = ImGui::GetContentRegionAvail().y;
+
+	rescale_framebuffer(window_width, window_height);
+	glViewport(0, 0, window_width, window_height);
+
+	ImVec2 pos = ImGui::GetCursorScreenPos();
+
+	ImGui::GetWindowDrawList()->AddImage(
+		texture_id,
+		ImVec2(pos.x, pos.y),
+		ImVec2(pos.x + window_width, pos.y + window_height),
+		ImVec2(0, 1),
+		ImVec2(1, 0)
+	);
+
+	ImGui::End();
+
 	DrawGuiTests();
 
     ImGui::Render();
+
+	bind_framebuffer();
+	glUseProgram(shader);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
+	glUseProgram(0);
+	unbind_framebuffer();
+
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
@@ -216,11 +254,11 @@ const void EditorApp::LoadFromFile(TextEditor& textEditor, const std::vector<con
 	}
 }
 
-void EditorApp::TryToCompile(TextEditor& textEditor)
+unsigned int EditorApp::TryToCompile(TextEditor& textEditor)
 {
 	Shader::ResetShaderErrors();
 
-	Shader::CreateProgramFromString(textEditor.currentFileToEdit, this->vertTextEditor.GetText(), this->fragTextEditor.GetText());
+	auto shader = Shader::CreateProgramFromString(textEditor.currentFileToEdit, this->vertTextEditor.GetText(), this->fragTextEditor.GetText());
 
 	textEditor.markers.clear();
 
@@ -232,9 +270,12 @@ void EditorApp::TryToCompile(TextEditor& textEditor)
 				std::make_pair<int, std::string>(
 					m.lineNumber,
 					std::string(m.errorCode + " : " + m.errorMessage)));
+			shader = 0;
 		}
 	}
 	textEditor.SetErrorMarkers(textEditor.markers);
+
+	return shader;
 }
 
 
@@ -271,7 +312,9 @@ void EditorApp::TextEditorRender(TextEditor& textEditor, const std::string& edit
 		ImGui::PushStyleColor(ImGuiCol_Button, inactiveCompileButtonColor);
 	if (ImGui::Button("Compile", ImVec2(96, 48)))
 	{
-		this->TryToCompile(textEditor);
+		auto lshader = this->TryToCompile(textEditor);
+		if (lshader != 0)
+			shader = lshader;
 	}
 	ImGui::PopStyleColor();
 	

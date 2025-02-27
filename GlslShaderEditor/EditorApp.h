@@ -45,5 +45,5 @@ private:
 
     const void LoadFromFile(TextEditor& textEditor, const std::vector<const char*>& filtersArray);
 
-    void TryToCompile(TextEditor& textEditor);
+    unsigned int TryToCompile(TextEditor& textEditor);
 };

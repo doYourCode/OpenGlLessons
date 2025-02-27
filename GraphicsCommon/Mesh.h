@@ -1,20 +1,8 @@
 #pragma once
 
-#include "VertexFormat.h"
-#include <glad/glad.h>
-#include <string>
+#include "Vertex.h"
 #include <vector>
-#include <map>
 
-#include <assimp/mesh.h>
-
-struct VertexData
-{
-	std::map<std::string, std::vector<float>> data = std::map<std::string, std::vector<float>>();
-	std::vector<unsigned int> indices = std::vector<unsigned int>();
-
-	static void CreateFromAssimpMesh(VertexData& meshDataInstance, aiMesh* assimpMesh); // change it later
-};
 
 struct StaticMesh
 {

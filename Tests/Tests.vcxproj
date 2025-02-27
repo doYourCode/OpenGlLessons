@@ -139,6 +139,9 @@
     <ProjectReference Include="..\GraphicsCommon\GraphicsCommon.vcxproj">
       <Project>{b38ef8e7-9a21-40ff-9267-de7eaee4c821}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\vendor\assimp\code\assimp.vcxproj">
+      <Project>{9463bd1a-a3ae-32d3-a0c7-337a06b3d951}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\Glfw\src\glfw.vcxproj">
       <Project>{586bc990-54a6-3b12-b0a3-32b67ba8671c}</Project>
     </ProjectReference>

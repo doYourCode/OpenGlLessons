@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <assimp/mesh.h>
 
 struct VertexAttribute
 {
@@ -43,6 +44,14 @@ struct VertexFormat
 	{
 		attributes.push_back(attrib);
 	}
+};
+
+struct VertexData
+{
+	std::map<std::string, std::vector<float>> data = std::map<std::string, std::vector<float>>();
+	std::vector<unsigned int> indices = std::vector<unsigned int>();
+
+	static void CreateFromAssimpMesh(VertexData& meshDataInstance, aiMesh* assimpMesh);
 };
 
 namespace VertexFormats

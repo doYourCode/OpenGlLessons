@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="AppUI.h" />
     <ClInclude Include="EditorApp.h" />
+    <ClInclude Include="framebuffer.h" />
     <ClInclude Include="IconsFontAwesome5.h" />
   </ItemGroup>
   <ItemGroup>
