@@ -14,7 +14,7 @@ bool firstMouse = true;
 float lastX = 800.0f / 2.0;
 float lastY = 600.0 / 2.0;
 
-unsigned int vao, vbo, ebo, colorVbo, texCoordVbo, shaderProgram;
+unsigned int shaderProgram;
 
 unsigned int texture1;
 
@@ -25,7 +25,7 @@ Texture* texture;
 
 Camera camera;
 
-Mesh mesh;
+StaticMesh sMesh;
 
 Text* text;
 
@@ -86,37 +86,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         camera.Zoom = 1.0f;
     if (camera.Zoom > 45.0f)
         camera.Zoom = 45.0f;
-}
-
-void CreateBuffer()
-{
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glGenBuffers(1, &colorVbo);
-    glGenBuffers(1, &texCoordVbo);
-    glGenBuffers(1, &ebo);
-
-    glBindVertexArray(vao);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, colorVbo);
-    glBufferData(GL_ARRAY_BUFFER, mesh.positions.size() * sizeof(float), mesh.positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, texCoordVbo);
-    glBufferData(GL_ARRAY_BUFFER, mesh.texCoords.size() * sizeof(float), mesh.texCoords.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(2);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.indices.size() * sizeof(unsigned int), mesh.indices.data(), GL_STATIC_DRAW);
 }
 
 void LoadShaderProgram()
@@ -180,15 +149,16 @@ void DrawBuffer(unsigned int programId)
     glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)800 / (float)800, 0.033f, 100.0f);
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    glBindVertexArray(vao);
-    glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(sMesh.renderVao);
+    
+    glDrawElements(GL_TRIANGLES, sMesh.indexSize, GL_UNSIGNED_INT, nullptr); printf("HERE!");
 }
 
 void MeshLoader::LoadContent()
 {
-    mesh.loadFromFile("../asset/mesh/suzanne.obj");
-
-    CreateBuffer();
+    sMesh = StaticMesh::LoadFromFile("../asset/mesh/suzanne.obj");
+    CheckVAOState(sMesh.renderVao, "After LoadFromFile");
 
     LoadShaderProgram();
 
@@ -216,10 +186,11 @@ void MeshLoader::Update(double deltaTime)
     transform = glm::rotate(transform, 0.01f, glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-
 void MeshLoader::Draw()
 {
+    CheckVAOState(sMesh.renderVao, "Before DrawBuffer");
     DrawBuffer(shaderProgram);
+    CheckVAOState(sMesh.renderVao, "After DrawBuffer");
 
     text->Draw("Mouse scroll to zoom in/out", 32, 64, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
     text->Draw("Press ESC to exit", 32, 32, 0.333f, glm::vec4(0.9f, 0.85f, 0.1f, 1.0f));
